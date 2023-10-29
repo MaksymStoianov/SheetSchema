@@ -1,15 +1,17 @@
+[**BG**](README_bg.md) | [**DE**](README_de.md) | **EN** | [**RU**](README_ru.md) | [**UK**](README_uk.md)
+
 # SheetSchema
 
-SheetSchema - это библиотека для работы с Google Таблицами в Google Apps Script. Этот проект предоставляет удобный способ структурирования данных в таблицах.
+SheetSchema is a library for working with Google Sheets in Google Apps Script. This project provides a convenient way to structure data in sheets.
 
-## Установка
+## Installation
 
 1. Откройте свой проект в [Google Apps Script Dashboard](https://script.google.com/).
-2. Скопируйте содержимое файла `index.js` и вставьте его в новый файл в вашем проекте Google Apps Script.
+2. Copy the content of the `index.js` file and paste it into a new file in your `Google Apps Script` project.
 
-## Использование
+## Usage
 
-### Как устанавлить схему в указанный лист электронной таблицы?
+### How to set a schema to a specified sheet of the spreadsheet?
 
  ```javascript
 const sheet = SpreadsheetApp.getActiveSheet();
@@ -18,22 +20,21 @@ let schema = SheetSchema.newSchema(fields);
 schema = SheetSchema.insertSchema(sheet, schema);
 ```
 
-### Как получить схему указанного листа электронной таблицы?
+### How to get the schema of a specified sheet of the spreadsheet?
 
  ```javascript
 const sheet = SpreadsheetApp.getActiveSheet();
 let schema = SheetSchema.getSchemaBySheet(sheet);
 ```
 
-### Как удалить схему из указанного листа электронной таблицы?
+### How to remove the schema from a specified sheet of the spreadsheet?
 
  ```javascript
 const sheet = SpreadsheetApp.getActiveSheet();
 let schema = SheetSchema.removeSchema(sheet);
 ```
 
-## История изменений
-- **3.0.0**: Полностью обновлена структура кода. Исправлены ошибки. Улучшена документация JSDoc.
-- **2.0.0**: Переосмыслена структура кода.
-- **1.0.0**: Релиз.
-
+## Changelog
+- **3.0.0**: Completely updated code structure. Fixed bugs. Improved JSDoc documentation.
+- **2.0.0**: Rethought code structure.
+- **1.0.0**: Release.
