@@ -7,18 +7,17 @@
 </div>
 
 
-# SettingsService
+# SheetSchema
 
 <div id="badges" align="left">
-  <img src="https://img.shields.io/github/v/release/MaksymStoianov/SettingsService" alt="Release">
-  <a href="LICENSE.md"><img src="https://img.shields.io/github/license/MaksymStoianov/SettingsService" alt="License"></a>
+  <img src="https://img.shields.io/github/v/release/MaksymStoianov/SheetSchema" alt="Release">
+  <a href="LICENSE.md"><img src="https://img.shields.io/github/license/MaksymStoianov/SheetSchema" alt="License"></a>
   <a href="https://github.com/google/clasp"><img src="https://img.shields.io/badge/built%20with-clasp-4285f4.svg" alt="clasp"></a>
 </div>
 
-**SettingsService** funktioniert ähnlich wie [**PropertiesService**](https://developers.google.com/apps-script/reference/properties), jedoch mit erweiterten Möglichkeiten.
+**SheetSchema** ist eine Google Apps Script-Bibliothek, die eine einfache Möglichkeit bietet, mit Sheet-Schemata in Google Sheets zu arbeiten.
 
-Die aktuelle Modifikation reduziert die Belastung der Systemgrenzen beim Lesen und Schreiben von Eigenschaften.
-Dies wird durch die parallele Speicherung von Daten im [**CacheService**](https://developers.google.com/apps-script/reference/cache) erreicht.
+Sie ermöglicht das Definieren, Einfügen, Extrahieren und Verwalten von Schemata in Google Sheets und erleichtert so die Pflege strukturierter Daten.
 
 __Achtung!__ Die Verwendung dieses Dienstes kann die Ausführungszeit des Skripts verlängern.
 
@@ -26,58 +25,60 @@ __Achtung!__ Die Verwendung dieses Dienstes kann die Ausführungszeit des Skript
 ## Installation
 
 1. Öffnen Sie Ihr Projekt im [Google Apps Script Dashboard](https://script.google.com/).
-2. Kopieren Sie den Inhalt der Datei [settings.js](../../src/settings.js) und fügen Sie ihn in eine neue Datei in Ihrem Google Apps Script-Projekt ein.
+2. Kopieren Sie den Inhalt der Datei [sheet-schema.js](../../src/sheet-schema.js) und fügen Sie ihn in eine neue Datei in Ihrem Google Apps Script-Projekt ein.
 
 
 ## Verwendung
 
-### Instanz der Einstellungen abrufen
+Hier sind einige Beispiele für die Verwendung von SheetSchema:
 
-Rufen Sie Einstellungen für ein Dokument, ein Skript oder einen Benutzer ab:
-
-```javascript
-// Dokumenteinstellungen
-const documentSettings = SettingsService.getDocumentSettings();
-
-// Szenarioeinstellungen
-const scriptSettings = SettingsService.getScriptSettings();
-
-// Benutzereinstellungen
-const userSettings = SettingsService.getUserSettings();
-```
-
-### Speichern von Daten
-
-Verwenden Sie Methoden oder Proxys, um Daten zu speichern:
+### Schema einfügen
 
 ```javascript
-// Anwendung der Methode
-scriptSettings.setProperty('email', 'stoianov.maksym@gmail.com');
+const Blatt = SpreadsheetApp.getActiveSheet();
+const fields = [ 'time', null, { name: 'id' } ];
+const schema = SheetSchema.insertSchema(sheet, fields);
 
-// Mit einem Proxy
-scriptSettings.email = 'stoianov.maksym@gmail.com';
+console.log(schema);
 ```
 
-### Datenabruf
-
-Verwenden Sie Methoden oder Proxys zum Abrufen von Daten:
+### Schema abrufen
 
 ```javascript
-// Anwendung der Methode
-const email = scriptSettings.getProperty('email');
+const Blatt = SpreadsheetApp.getActiveSheet();
+const schema = SheetSchema.getSchemaBySheet(sheet);
 
-// Mit einem Proxy
-const email = scriptSettings.email;
+console.log(schema);
 ```
 
+### Abrufen von Feld nach Spaltenindex
 
-## Aufgaben
+```javascript
+const Blatt = SpreadsheetApp.getActiveSheet();
+const schema = SheetSchema.getSchemaBySheet(sheet);
+const field = schema.getFieldByIndex(0);
 
-- [ ] Erstellen Sie eine Methode `settings.setProperties(properties, deleteAllOthers)`.
-- [ ] Erstelle eine Methode `settings.getKeys()`.
-- [ ] Erstelle Methode `settings.getProperties()`.
-- [ ] Erstelle eine Methode `settings.deleteAllProperties()`.
-- [ ] Verwenden Sie einen rekursiven Proxy, um Änderungen am Objektbaum in `settings._values` zu verfolgen, dies sollte auch eine Hierarchie von Objekten erstellen, z.B.: `settings._values.prop1.m1.m2 = 5;`.
+console.log(field);
+```
+
+### Feld nach Name abrufen
+
+```javascript
+const Blatt = SpreadsheetApp.getActiveSheet();
+const schema = SheetSchema.getSchemaBySheet(Blatt);
+const field = schema.getFieldByName('time');
+
+console.log(field);
+```
+
+### Löschen des Schemas
+
+```javascript
+const Blatt = SpreadsheetApp.getActiveSheet();
+const result = SheetSchema.removeSchema(sheet);
+
+console.log(result);
+```
 
 
 ## Beitrag

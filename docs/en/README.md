@@ -7,18 +7,17 @@
 </div>
 
 
-# SettingsService
+# SheetSchema
 
 <div id="badges" align="left">
-  <img src="https://img.shields.io/github/v/release/MaksymStoianov/SettingsService" alt="Release">
-  <a href="LICENSE.md"><img src="https://img.shields.io/github/license/MaksymStoianov/SettingsService" alt="License"></a>
+  <img src="https://img.shields.io/github/v/release/MaksymStoianov/SheetSchema" alt="Release">
+  <a href="LICENSE.md"><img src="https://img.shields.io/github/license/MaksymStoianov/SheetSchema" alt="License"></a>
   <a href="https://github.com/google/clasp"><img src="https://img.shields.io/badge/built%20with-clasp-4285f4.svg" alt="clasp"></a>
 </div>
 
-**SettingsService** works similarly to [**PropertiesService**](https://developers.google.com/apps-script/reference/properties) but with enhanced capabilities.
+**SheetSchema** is a Google Apps Script library that provides an easy way to work with sheet schemas in Google Sheets.
 
-The current modification reduces the load on system limits when reading and writing properties.
-This is achieved through parallel data storage in [**CacheService**](https://developers.google.com/apps-script/reference/cache).
+It allows you to define, insert, extract and manage schemas in Google Sheets, making it easy to maintain structured data.
 
 __Note!__ Using this service may increase script execution time.
 
@@ -26,58 +25,60 @@ __Note!__ Using this service may increase script execution time.
 ## Installation
 
 1. Open your project in the [Google Apps Script Dashboard](https://script.google.com/).
-2. Copy the contents of the [settings.js](../../src/settings.js) file and paste it into a new file in your Google Apps Script project.
+2. Copy the contents of the [sheet-schema.js](../../src/sheet-schema.js) file and paste it into a new file in your Google Apps Script project.
 
 
 ## Usage
 
-### Getting a settings instance
+Here are some examples of how to use SheetSchema:
 
-Retrieve settings for a document, script, or user:
-
-```javascript
-// Document settings
-const documentSettings = SettingsService.getDocumentSettings();
-
-// Script settings
-const scriptSettings = SettingsService.getScriptSettings();
-
-// User settings
-const userSettings = SettingsService.getUserSettings();
-```
-
-### Saving data
-
-Use methods or proxies to save data:
+### Insert Schema
 
 ```javascript
-// Using the method
-scriptSettings.setProperty('email', 'stoianov.maksym@gmail.com');
+const sheet = SpreadsheetApp.getActiveSheet();
+const fields = [ 'time', null, { name: 'id' } ];
+const schema = SheetSchema.insertSchema(sheet, fields);
 
-// Using a proxy
-scriptSettings.email = 'stoianov.maksym@gmail.com';
+console.log(schema);
 ```
 
-### Data retrieval
-
-Use methods or proxies to retrieve data:
+### Retrieve schema
 
 ```javascript
-// Using the method
-const email = scriptSettings.getProperty('email');
+const sheet = SpreadsheetApp.getActiveSheet();
+const schema = SheetSchema.getSchemaBySheet(sheet);
 
-// Using a proxy
-const email = scriptSettings.email;
+console.log(schema);
 ```
 
+### Retrieve field by column index
 
-## Tasks
+```javascript
+const sheet = SpreadsheetApp.getActiveSheet();
+const schema = SheetSchema.getSchemaBySheet(sheet);
+const field = schema.getFieldByIndex(0);
 
-- [ ] Create a method `settings.setProperties(properties, deleteAllOthers)`.
-- [ ] Create a method `settings.getKeys()`.
-- [ ] Create method `settings.getProperties()`.
-- [ ] Create a method `settings.deleteAllProperties()`.
-- [ ] Use a recursive proxy to track changes to the object tree in `settings._values`, this should also create a hierarchy of objects, e.g.: `settings._values.prop1.m1.m2 = 5;`.
+console.log(field);
+```
+
+### Get field by name
+
+```javascript
+const sheet = SpreadsheetApp.getActiveSheet();
+const schema = SheetSchema.getSchemaBySheet(sheet);
+const field = schema.getFieldByName('time');
+
+console.log(field);
+```
+
+### Deleting schema
+
+```javascript
+const sheet = SpreadsheetApp.getActiveSheet();
+const result = SheetSchema.removeSchema(sheet);
+
+console.log(result);
+```
 
 
 ## Contribution

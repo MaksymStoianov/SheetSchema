@@ -7,18 +7,17 @@
 </div>
 
 
-# SettingsService
+# SheetSchema
 
 <div id="badges" align="left">
-  <img src="https://img.shields.io/github/v/release/MaksymStoianov/SettingsService" alt="Release">
-  <a href="LICENSE.md"><img src="https://img.shields.io/github/license/MaksymStoianov/SettingsService" alt="License"></a>
+  <img src="https://img.shields.io/github/v/release/MaksymStoianov/SheetSchema" alt="Release">
+  <a href="LICENSE.md"><img src="https://img.shields.io/github/license/MaksymStoianov/SheetSchema" alt="License"></a>
   <a href="https://github.com/google/clasp"><img src="https://img.shields.io/badge/built%20with-clasp-4285f4.svg" alt="clasp"></a>
 </div>
 
-**SettingsService** працює подібно до [**PropertiesService**](https://developers.google.com/apps-script/reference/properties), але з покращеними можливостями.
+**SheetSchema** - це бібліотека сценаріїв Google Apps Script, яка забезпечує простий спосіб роботи зі схемами аркушів у Google Sheets.
 
-Поточна модифікація зменшує навантаження на системні ліміти при читанні та запису властивостей.
-Це досягається завдяки паралельному зберіганню даних у [**CacheService**](https://developers.google.com/apps-script/reference/cache).
+Вона дає змогу визначати, вставляти, витягувати та керувати схемами в Google Sheets, що спрощує ведення структурованих даних.
 
 __Увага!__ Використання цього сервісу може збільшити час виконання скрипта.
 
@@ -26,58 +25,60 @@ __Увага!__ Використання цього сервісу може зб
 ## Встановлення
 
 1. Відкрийте свій проект у [Google Apps Script Dashboard](https://script.google.com/).
-2. Скопіюйте вміст файлу [settings.js](../../src/settings.js) і вставте його у новий файл у вашому проекті Google Apps Script.
+2. Скопіюйте вміст файлу [sheet-schema.js](../../src/sheet-schema.js) і вставте його у новий файл у вашому проекті Google Apps Script.
 
 
 ## Використання
 
-### Отримання екземпляра налаштувань
+Ось кілька прикладів використання SheetSchema:
 
-Отримайте налаштування для документа, скрипта або користувача:
-
-```javascript
-// Налаштування документа
-const documentSettings = SettingsService.getDocumentSettings();
-
-// Налаштування сценарію
-const scriptSettings = SettingsService.getScriptSettings();
-
-// Налаштування користувача
-const userSettings = SettingsService.getUserSettings();
-```
-
-### Збереження даних
-
-Використовуйте методи або проксі для збереження даних:
+### Вставка схеми
 
 ```javascript
-// За допомогою методу
-scriptSettings.setProperty('email', 'stoianov.maksym@gmail.com');
+const sheet = SpreadsheetApp.getActiveSheet();
+const fields = [ 'time', null, { name: 'id' } ];
+const schema = SheetSchema.insertSchema(sheet, fields);
 
-// За допомогою проксі
-scriptSettings.email = 'stoianov.maksym@gmail.com';
+console.log(schema);
 ```
 
-### Отримання даних
-
-Використовуйте методи або проксі для отримання даних:
+### Отримання схеми
 
 ```javascript
-// За допомогою методу
-const email = scriptSettings.getProperty('email');
+const sheet = SpreadsheetApp.getActiveSheet();
+const schema = SheetSchema.getSchemaBySheet(sheet);
 
-// За допомогою проксі
-const email = scriptSettings.email;
+console.log(schema);
 ```
 
+### Отримання поля за індексом стовпця
 
-## Завдання
+```javascript
+const sheet = SpreadsheetApp.getActiveSheet();
+const schema = SheetSchema.getSchemaBySheet(sheet);
+const field = schema.getFieldByIndex(0);
 
-- [ ] Створити метод `settings.setProperties(properties, deleteAllOthers)`.
-- [ ] Створити метод `settings.getKeys()`.
-- [ ] Створити метод `settings.getProperties()`.
-- [ ] Створити метод `settings.deleteAllProperties()`.
-- [ ] Використовувати рекурсивний проксі для відстеження змін дерева об'єктів в `settings._values`, це також має створювати ієрархію об'єктів, наприклад: `settings._values.prop1.m1.m2 = 5;`.
+console.log(field);
+```
+
+### Отримання поля за його іменем
+
+```javascript
+const sheet = SpreadsheetApp.getActiveSheet();
+const schema = SheetSchema.getSchemaBySheet(sheet);
+const field = schema.getFieldByName('time');
+
+console.log(field);
+```
+
+### Видалення схеми
+
+```javascript
+const sheet = SpreadsheetApp.getActiveSheet();
+const result = SheetSchema.removeSchema(sheet);
+
+console.log(result);
+```
 
 
 ## Внесок
