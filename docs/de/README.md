@@ -28,6 +28,11 @@ __Achtung!__ Die Verwendung dieses Dienstes kann die Ausführungszeit des Skript
 2. Kopieren Sie den Inhalt der Datei [sheet-schema.js](../../src/sheet-schema.js) und fügen Sie ihn in eine neue Datei in Ihrem Google Apps Script-Projekt ein.
 
 
+## Dokumentation
+
+Eine ausführliche Dokumentation finden Sie auf der Seite [Wiki](../../../../wiki/de).
+
+
 ## Verwendung
 
 Hier sind einige Beispiele für die Verwendung von SheetSchema:

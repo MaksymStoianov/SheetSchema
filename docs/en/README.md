@@ -28,6 +28,11 @@ __Note!__ Using this service may increase script execution time.
 2. Copy the contents of the [sheet-schema.js](../../src/sheet-schema.js) file and paste it into a new file in your Google Apps Script project.
 
 
+## Documentation
+
+For detailed documentation, please visit the [Wiki](../../../../wiki/en) page.
+
+
 ## Usage
 
 Here are some examples of how to use SheetSchema:
