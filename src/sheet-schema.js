@@ -28,7 +28,7 @@
  * `SheetSchema` - представляет собой объект реализующий работу со схемой листа электронной таблицы.
  * @class               SheetSchema
  * @namespace           SheetSchema
- * @version             3.0.2
+ * @version             3.1.0
  * @author              Maksym Stoianov <stoianov.maksym@gmail.com>
  * @license             MIT
  * @tutorial            https://maksymstoianov.com/
@@ -78,11 +78,13 @@ class SheetSchema {
    * @return {SheetSchema.Schema} Экземпляр класса [`Schema`](#) или `null`.
    */
   static getSchemaBySheet(sheet) {
-    if (!arguments.length)
+    if (!arguments.length) {
       throw new Error(`Параметры () не соответствуют сигнатуре статического метода ${this.name}.getSchemaBySheet.`);
+    }
 
-    if (!isSheet(sheet))
+    if (!this.isSheet(sheet)) {
       throw new TypeError(`Параметры (${typeof name}) не соответствуют сигнатуре статического метода ${this.name}.getSchemaBySheet.`);
+    }
 
     const listMetadata = sheet
       .createDeveloperMetadataFinder()
@@ -116,13 +118,16 @@ class SheetSchema {
       fields[index][key] = metadata.getValue();
     }
 
-    for (const [i, field] of fields.entries())
-      if (!(Object.isObject(field) && this.isFieldName(field.name)))
+    for (const [i, field] of fields.entries()) {
+      if (!(Object.isObject(field) && this.isFieldName(field.name))) {
         fields[i] = null;
+      }
+    }
 
     // Если нет полей
-    if (!fields.filter(item => item != null).length)
+    if (!fields.filter(item => item != null).length) {
       return null;
+    }
 
     return this.newSchema(fields).setSheet(sheet);
   }
@@ -138,8 +143,9 @@ class SheetSchema {
     if (!arguments.length)
       throw new Error(`Параметры () не соответствуют сигнатуре статического метода ${this.name}.removeSchema.`);
 
-    if (!isSheet(sheet))
+    if (!this.isSheet(sheet)) {
       throw new TypeError(`Параметры (${typeof name}) не соответствуют сигнатуре статического метода ${this.name}.removeSchema.`);
+    }
 
     const listMetadata = sheet
       .createDeveloperMetadataFinder()
@@ -190,8 +196,9 @@ class SheetSchema {
    * @return {SheetSchema.Schema} Экземпляр класса [`Schema`](#).
    */
   static newSchema(...args) {
-    if (!arguments.length)
-      throw new Error(`Параметры () не соответствуют сигнатуре статического метода ${this.neme}.newSchema.`);
+    if (!arguments.length) {
+      throw new Error(`Параметры () не соответствуют сигнатуре статического метода ${this.name}.newSchema.`);
+    }
 
     let fields = [];
 
@@ -201,7 +208,7 @@ class SheetSchema {
     else if (Array.isArray(args[0]))
       fields = args[0];
 
-    else throw new Error(`Недопустимые аргументы: невозможно определить правильную перегрузку статического метода ${this.neme}.newSchema.`);
+    else throw new Error(`Недопустимые аргументы: невозможно определить правильную перегрузку статического метода ${this.name}.newSchema.`);
 
     return Reflect.construct(this.Schema, [fields]);
   }
@@ -214,33 +221,34 @@ class SheetSchema {
   /**
    * @overload
    * @param {string} name Название поля.
-   * @param {Object} [options={}] Опциональные параметры.
-   * @param {string} [options.description='']
-   * @param {string} [options.mode='NULLABLE']
-   * @param {string} [options.type='STRING']
+   * @param {Object} [options = {}] Опциональные параметры.
+   * @param {string} [options.description = '']
+   * @param {string} [options.mode = 'NULLABLE']
+   * @param {string} [options.type = 'STRING']
    * @return {SheetSchema.Field} Экземпляр класса [`Field`](#).
    */
   /**
    * @overload
    * @param {Object} data
    * @param {string} data.name
-   * @param {string} [data.description='']
-   * @param {string} [data.mode='NULLABLE']
-   * @param {string} [data.type='STRING']
+   * @param {string} [data.description = '']
+   * @param {string} [data.mode = 'NULLABLE']
+   * @param {string} [data.type = 'STRING']
    * @return {SheetSchema.Field} Экземпляр класса [`Field`](#).
    */
   /**
    * @overload
    * @param {SheetSchema.Field} field Поле.
    * @param {string} field.name
-   * @param {string} [field.description='']
-   * @param {string} [field.mode='NULLABLE']
-   * @param {string} [field.type='STRING']
+   * @param {string} [field.description = '']
+   * @param {string} [field.mode = 'NULLABLE']
+   * @param {string} [field.type = 'STRING']
    * @return {SheetSchema.Field} Экземпляр класса [`Field`](#).
    */
   static newField(...args) {
-    if (!arguments.length)
-      throw new Error(`Параметры () не соответствуют сигнатуре статического метода ${this.neme}.newField.`);
+    if (!arguments.length) {
+      throw new Error(`Параметры () не соответствуют сигнатуре статического метода ${this.name}.newField.`);
+    }
 
     let name, options = {};
 
@@ -262,7 +270,7 @@ class SheetSchema {
       options = args[1];
     }
 
-    else throw new Error(`Недопустимые аргументы: невозможно определить правильную перегрузку статического метода ${this.neme}.newField.`);
+    else throw new Error(`Недопустимые аргументы: невозможно определить правильную перегрузку статического метода ${this.name}.newField.`);
 
     return Reflect.construct(this.Field, [name, options]);
   }
@@ -272,11 +280,12 @@ class SheetSchema {
   /**
    * Проверяет, является ли заданное значение объектом типа [`Schema`](#).
    * @param {*} input Значение для проверки.
-   * @return {boolean} `true`, если объект является [`Schema`](#); иначе, `false`.
+   * @return {boolean}
    */
   static isSchema(input) {
-    if (!arguments.length)
+    if (!arguments.length) {
       throw new Error(`The parameters () don't match any method signature for ${this.name}.isSchema.`);
+    }
 
     return (input instanceof this.Schema);
   }
@@ -286,11 +295,12 @@ class SheetSchema {
   /**
    * Проверяет, является ли заданное значение объектом типа [`Field`](#).
    * @param {*} input Значение для проверки.
-   * @return {boolean} `true`, если объект является [`Field`](#); иначе, `false`.
+   * @return {boolean}
    */
   static isField(input) {
-    if (!arguments.length)
+    if (!arguments.length) {
       throw new Error(`The parameters () don't match any method signature for ${this.name}.isField.`);
+    }
 
     return (input instanceof this.Field);
   }
@@ -302,8 +312,9 @@ class SheetSchema {
    * @return {boolean}
    */
   static isFieldName(input) {
-    if (!arguments.length)
+    if (!arguments.length) {
       throw new Error(`The parameters () don't match any method signature for ${this.name}.isFieldName.`);
+    }
 
     return (
       typeof input === 'string' &&
@@ -318,8 +329,9 @@ class SheetSchema {
    * @return {boolean}
    */
   static isFieldDescription(input) {
-    if (!arguments.length)
+    if (!arguments.length) {
       throw new Error(`The parameters () don't match any method signature for ${this.name}.isFieldDescription.`);
+    }
 
     return ['string', 'number'].includes(typeof input);
   }
@@ -331,8 +343,9 @@ class SheetSchema {
    * @return {boolean}
    */
   static isFieldMode(input) {
-    if (!arguments.length)
+    if (!arguments.length) {
       throw new Error(`The parameters () don't match any method signature for ${this.name}.isFieldMode.`);
+    }
 
     return (
       typeof input === 'string' &&
@@ -347,8 +360,9 @@ class SheetSchema {
    * @return {boolean}
    */
   static isFieldType(input) {
-    if (!arguments.length)
+    if (!arguments.length) {
       throw new Error(`The parameters () don't match any method signature for ${this.name}.isFieldType.`);
+    }
 
     return (
       typeof input === 'string' &&
@@ -358,11 +372,29 @@ class SheetSchema {
 
 
 
+  /**
+   * Возвращает `true`, если объект является [`Sheet`](https://developers.google.com/apps-script/reference/spreadsheet/sheet); иначе, `false`.
+   * @param {*} input Объект для проверки.
+   * @return {boolean}
+   */
+  static isSheet(input) {
+    if (!arguments.length) {
+      throw new Error(`The parameters () don't match any method signature for ${this.name}.isSheet.`);
+    }
+
+    return (
+      input === Object(input) &&
+      input?.toString() === 'Sheet'
+    );
+  };
+
+
+
   constructor() {
     throw new Error(`${this.constructor.name} is not a constructor.`);
   }
 
-};
+}
 
 
 
@@ -372,16 +404,16 @@ class SheetSchema {
  * Конструктор 'Schema' - представляет собой объект для работы со схемой листа.
  * @class               Schema
  * @memberof            SheetSchema
- * @version             3.0.2
+ * @version             3.1.0
  */
 SheetSchema.Schema = class Schema {
 
   /**
-   * @param {(Object[]|SheetSchema.Field[])} [fields=[]]
+   * @param {(Object[]|SheetSchema.Field[])} [fields = []]
    */
   constructor(fields = []) {
     if (!Array.isArray(fields)) {
-      throw new TypeError(`Параметры (${typeof fields}) не соответствуют сигнатуре конструктора ${this.neme}.`);
+      throw new TypeError(`Параметры (${typeof fields}) не соответствуют сигнатуре конструктора ${this.constructor.name}.`);
     }
 
     /**
@@ -390,10 +422,10 @@ SheetSchema.Schema = class Schema {
      * @type {SpreadsheetApp.Sheet}
      */
     Object.defineProperty(this, '_sheet', {
-      configurable: true,
-      enumerable: false,
-      writable: true,
-      value: null
+      "configurable": true,
+      "enumerable": false,
+      "writable": true,
+      "value": null
     });
 
     /**
@@ -404,20 +436,20 @@ SheetSchema.Schema = class Schema {
 
     for (let [i, field] of fields.entries()) {
       try {
-        field = field ?? null;
+        field = (field ?? null);
 
         if (field === null) continue;
 
         else if (typeof field === 'string') {
-          field = { name: field };
+          field = { "name": field };
         }
 
         else if (!Object.isObject(field)) {
-          throw new TypeError(`Значение поля с индексом ${Math.abs(i)} должно быть object.`);
+          throw new TypeError(`Значение поля с индексом ${Math.abs(i)} должно быть Object.`);
         }
 
         if (typeof field.name !== 'string') {
-          throw new TypeError(`Имя поля с индексом ${Math.abs(i)} должно быть string.`);
+          throw new TypeError(`Имя поля с индексом ${Math.abs(i)} должно быть String.`);
         }
 
         field = SheetSchema.newField(field).addToSchema(this, i + 1);
@@ -425,7 +457,7 @@ SheetSchema.Schema = class Schema {
         field = null;
         console.warn(error.stack);
       } finally {
-        this.fields[i] = field ?? null;
+        this.fields[i] = (field ?? null);
       }
     }
 
@@ -450,15 +482,15 @@ SheetSchema.Schema = class Schema {
    */
   getFieldByName(name) {
     if (!arguments.length) {
-      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.neme}.getFieldByName.`);
+      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.constructor.name}.getFieldByName.`);
     }
 
     if (typeof name !== 'string') {
-      throw new TypeError(`Параметры (${typeof name}) не соответствуют сигнатуре метода ${this.neme}getFieldByName.`);
+      throw new TypeError(`Недопустимое значение аргумента "name".`);
     }
 
     if (!name.length) {
-      throw new Error(`Недопустимый аргумент name метода ${this.neme}.getFieldByName.`);
+      throw new TypeError(`Недопустимое значение аргумента "name".`);
     }
 
     return this.fields?.find(item => item?.name === name) ?? null;
@@ -468,46 +500,46 @@ SheetSchema.Schema = class Schema {
 
   /**
    * Получить поле по индексу столбца.
-   * @param {integer} columnIndex
+   * @param {Integer} colIndex
    * @return {SheetSchema.Field}
    */
-  getFieldByIndex(columnIndex) {
+  getFieldByIndex(colIndex) {
     if (!arguments.length) {
-      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.neme}.getFieldByIndex.`);
+      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.constructor.name}.getFieldByIndex.`);
     }
 
-    if (typeof columnIndex !== 'number') {
-      throw new TypeError(`Параметры (${typeof columnPosition}) не соответствуют сигнатуре метода ${this.neme}.getFieldByColumn.`);
+    if (typeof colIndex !== 'number') {
+      throw new TypeError(`Недопустимое значение аргумента "colIndex".`);
     }
 
-    if (!(Number.isInteger(columnIndex) && columnIndex >= 0)) {
-      throw new Error(`Недопустимый аргумент columnIndex метода ${this.neme}.getFieldByIndex.`);
+    if (!(Number.isInteger(colIndex) && colIndex >= 0)) {
+      throw new TypeError(`Недопустимое значение аргумента "colIndex".`);
     }
 
-    return (this.fields ?? [])[columnIndex] ?? null;
+    return ((this.fields ?? [])[colIndex] ?? null);
   }
 
 
 
   /**
    * Получить поле по положению столбца.
-   * @param {integer} columnPosition 1-индексированная позиция столбца. Например, индекс столбца B равен 2.
+   * @param {Integer} col 1-индексированная позиция столбца. Например, индекс столбца B равен 2.
    * @return {SheetSchema.Field}
    */
-  getFieldByColumn(columnPosition) {
+  getFieldByColumn(col) {
     if (!arguments.length) {
-      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.neme}.getFieldByColumn.`);
+      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.constructor.name}.getFieldByColumn.`);
     }
 
-    if (typeof columnPosition !== 'number') {
-      throw new TypeError(`Параметры (${typeof columnPosition}) не соответствуют сигнатуре метода ${this.neme}.getFieldByColumn.`);
+    if (typeof col !== 'number') {
+      throw new TypeError(`Недопустимое значение аргумента "col".`);
     }
 
-    if (!(Number.isInteger(columnPosition) && columnPosition > 0)) {
-      throw new Error(`Недопустимый аргумент columnPosition метода ${this.neme}.getFieldByColumn.`);
+    if (!(Number.isInteger(col) && col > 0)) {
+      throw new TypeError(`Недопустимое значение аргумента "col".`);
     }
 
-    return this.fields[columnPosition - 1] ?? null;
+    return (this.fields[col - 1] ?? null);
   }
 
 
@@ -523,8 +555,8 @@ SheetSchema.Schema = class Schema {
 
     const sheet = this.getSheet();
 
-    if (!isSheet(sheet)) {
-      throw new TypeError(`Параметры (${typeof name}) не соответствуют сигнатуре статического метода ${this.constructor.name}.removeSchema.`);
+    if (!SheetSchema.isSheet(sheet)) {
+      throw new TypeError(`Недопустимое значение "sheet".`);
     }
 
     const listMetadata = sheet
@@ -552,11 +584,11 @@ SheetSchema.Schema = class Schema {
    */
   setSheet(sheet) {
     if (!arguments.length) {
-      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.neme}.setSheet.`);
+      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.constructor.name}.setSheet.`);
     }
 
-    if (!isSheet(sheet)) {
-      throw new TypeError(`Параметры (${typeof sheet}) не соответствуют сигнатуре метода ${this.neme}.setSheet.`);
+    if (!SheetSchema.isSheet(sheet)) {
+      throw new TypeError(`Недопустимое значение аргумента "sheet".`);
     }
 
     this._sheet = sheet;
@@ -582,21 +614,21 @@ SheetSchema.Schema = class Schema {
     const sheet = this.getSheet();
 
     if (!sheet) {
-      throw new Error(`Недопустимое значение sheet.`);
+      throw new TypeError(`Недопустимое значение sheet.`);
     }
 
-    for (const [columnIndex, field] of this.fields.entries()) {
+    for (const [colIndex, field] of this.fields.entries()) {
       try {
-        const columnPosition = columnIndex + 1;
+        const col = colIndex + 1;
 
-        let range = (sheet[`_range_column_${columnPosition}`] ?? null);
+        let range = (sheet[`_range_column_${col}`] ?? null);
 
         if (!range) {
-          range = (sheet.getRange(`C[${columnIndex}]:C[${columnIndex}]`) ?? null);
+          range = (sheet.getRange(`C[${colIndex}]:C[${colIndex}]`) ?? null);
         }
 
         if (!range) {
-          throw new Error(`Недопустимое значение range.`);
+          throw new TypeError(`Недопустимое значение "range".`);
         }
 
         const fieldNamePrefix = 'schema.field.';
@@ -638,7 +670,8 @@ SheetSchema.Schema = class Schema {
 
 
   /**
-   * @param {SpreadsheetApp.Sheet} sheet
+   * Добавляет текущую схему в указанный лист таблицы.
+   * @param {SpreadsheetApp.Sheet} sheet Лист электронной таблицы, в который будет добавлена схема.
    * @return {boolean}
    */
   addToSheet(sheet) {
@@ -648,17 +681,28 @@ SheetSchema.Schema = class Schema {
 
 
   /**
-   * Преобразует список значений в объект.
+   * Преобразует массив значений в объект.
+   * 
+   * Метод берёт массив значений и преобразует его в объект, основываясь на заданной схеме (порядке полей).
+   * Если поле отсутствует в объекте, его значение будет `null`.
+   * 
+   * #### Example
+   * ```javascript
+   * const values = [ 'yyyy-MM-dd', 'info', 0 ];
+   * const result = schema.fromEntries(values);
+   * 
+   * console.log(result); // { "count": 0, "date": 'yyyy-MM-dd',  "type": 'info' }
+   * ```
    * @param {Array} input
    * @return {Object}
    */
   fromEntries(input) {
     if (!arguments.length) {
-      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.neme}.fromEntries.`);
+      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.constructor.name}.fromEntries.`);
     }
 
     if (!Array.isArray(input)) {
-      throw new TypeError(`Параметры (${typeof input}) не соответствуют сигнатуре метода ${this.neme}.fromEntries.`);
+      throw new TypeError(`Недопустимое значение аргумента.`);
     }
 
     const result = {};
@@ -673,11 +717,86 @@ SheetSchema.Schema = class Schema {
 
 
   /**
+   * Преобразует объект в массив значений согласно схеме.
+   * 
+   * Метод берёт объект и преобразует его значения в массив, основываясь на заданной схеме (порядке полей).
+   * Если поле отсутствует в объекте, его значение будет `null`.
+   * 
+   * #### Example
+   * ```javascript
+   * const values = {
+   *   "count": 0,
+   *   "date": 'yyyy-MM-dd',
+   *   "type": 'info'
+   * };
+   * const result = schema.toEntries(values);
+   * 
+   * console.log(result); // [ 'yyyy-MM-dd', 'info', 0 ]
+   * ```
+   * @param {Object} input
+   * @return {Array}
+   */
+  toEntries(input) {
+    if (!arguments.length) {
+      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.constructor.name}.toEntries.`);
+    }
+
+    if (!(input !== null && typeof input === 'object' && input.constructor === Object)) {
+      throw new TypeError(`Недопустимое значение аргумента.`);
+    }
+
+    const result = new Array(this.fields.length).fill(null);
+
+    for (const [i, field] of this.fields.entries()) {
+      result[i] = (input[field] ?? null);
+    }
+
+    return result;
+  }
+
+
+
+  /**
+   * Вызывается при преобразовании объекта в соответствующее примитивное значение.
+   * @param {string} hint Строковый аргумент, который передаёт желаемый тип примитива: `string`, `number` или `default`.
+   * @return {string}
+   */
+  [Symbol.toPrimitive](hint) {
+    if (hint !== 'string') {
+      return null;
+    }
+
+    return this.constructor.name;
+  }
+
+
+
+  /**
+   * Возвращает значение текущего объекта.
+   * @return {string}
+   */
+  valueOf() {
+    return (this[Symbol.toPrimitive] ? this[Symbol.toPrimitive]() : this.constructor.name);
+  }
+
+
+
+  /**
+   * Геттер для получения строки, представляющей тег объекта.
+   * @return {string} Имя класса текущего объекта, используемое в `Object.prototype.toString`.
+   */
+  get [Symbol.toStringTag]() {
+    return this.constructor.name;
+  }
+
+
+
+  /**
    * Возвращает строку, представляющую объект.
    * @return {string}
    */
   toString() {
-    return this.constructor.name;
+    return (this[Symbol.toPrimitive] ? this[Symbol.toPrimitive]('string') : this.constructor.name);
   }
 
 };
@@ -690,21 +809,21 @@ SheetSchema.Schema = class Schema {
  * Конструктор 'Field' - представляет собой объект для работы с полем схемы.
  * @class               Field
  * @memberof            SheetSchema
- * @version             3.0.2
+ * @version             3.1.0
  */
 SheetSchema.Field = class Field {
 
   /**
    * @param {string} name Название поля.
-   * @param {Object} [options={}] Опциональные параметры.
-   * @param {string} [options.description='']
-   * @param {string} [options.mode='NULLABLE']
-   * @param {string} [options.type='STRING']
+   * @param {Object} [options = {}] Опциональные параметры.
+   * @param {string} [options.description = '']
+   * @param {string} [options.mode = 'NULLABLE']
+   * @param {string} [options.type = 'STRING']
    * @param {SchemaApp.Schema} [options.schema]
    */
   constructor(name, options = {}) {
     if (!arguments.length) {
-      throw new Error(`Параметры () не соответствуют сигнатуре конструктора ${this.neme}.`);
+      throw new Error(`Параметры () не соответствуют сигнатуре конструктора ${this.constructor.name}.`);
     }
 
 
@@ -733,7 +852,8 @@ SheetSchema.Field = class Field {
      * @type {Proxy}
      */
     this._proxy = new Proxy(this, {
-      'get': (target, property) => {
+
+      get(target, property) {
         if (property === 'inspect') {
           return null;
         }
@@ -746,11 +866,15 @@ SheetSchema.Field = class Field {
           return (...args) => target[property].apply(this, args);
         }
 
-        return target._values[property] ?? target[property] ?? null;
+        return (
+          target._values[property] ??
+          target[property] ??
+          null
+        );
       },
 
 
-      'set': (target, property, value) => {
+      set(target, property, value) {
         switch (property) {
           case 'name':
             if (!SheetSchema.isFieldName(value)) {
@@ -788,15 +912,17 @@ SheetSchema.Field = class Field {
 
         return value;
       }
-    });
 
+    });
 
 
     for (const key of Object.getOwnPropertyNames(this)) {
       if (key.startsWith('_')) {
         // Скрыть свойство
         Object.defineProperty(this, key, {
-          "enumerable": false
+          "configurable": true,
+          "enumerable": false,
+          "writable": true
         });
       }
     }
@@ -815,7 +941,7 @@ SheetSchema.Field = class Field {
 
   /**
    * @readonly
-   * @type {integer}
+   * @type {Integer}
    * @fixme Возможно get и set методы не будут работать с _proxy.
    */
   get index() {
@@ -829,7 +955,7 @@ SheetSchema.Field = class Field {
 
   /**
    * @readonly
-   * @type {integer}
+   * @type {Integer}
    * @fixme Возможно `get` и `set` методы не будут работать с `_proxy`.
    */
   get values() {
@@ -863,21 +989,21 @@ SheetSchema.Field = class Field {
     const sheet = this.getSheet();
 
     if (!sheet) {
+      throw new TypeError(`Недопустимое значение "sheet".`);
+    }
+
+    const colIndex = this.index;
+
+    if (!(colIndex >= 0)) {
       return null;
     }
 
-    const columnIndex = this.index;
+    const col = colIndex + 1;
 
-    if (!(columnIndex >= 0)) {
-      return null;
-    }
-
-    const columnPosition = columnIndex + 1;
-
-    let range = (sheet[`_range_column_${columnPosition}`] ?? null);
+    let range = (sheet[`_range_column_${col}`] ?? null);
 
     if (!range) {
-      range = (sheet.getRange(`C[${columnPosition}]:C[${columnPosition}]`) ?? null);
+      range = (sheet.getRange(`C[${col}]:C[${col}]`) ?? null);
     }
 
     return range;
@@ -888,35 +1014,35 @@ SheetSchema.Field = class Field {
   /**
    * Добавляет текущее поле к указанной схеме.
    * @param {SheetSchema.Schema} schema
-   * @param {integer} columnPosition
+   * @param {Integer} col
    * @return {SheetSchema.Field}
    */
-  addToSchema(schema, columnPosition) {
+  addToSchema(schema, col) {
     if (!arguments.length) {
-      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.neme}.addToSchema`);
+      throw new Error(`Параметры () не соответствуют сигнатуре метода ${this.constructor.name}.addToSchema`);
     }
 
     if (!SheetSchema.isSchema(schema)) {
-      throw new TypeError(`Параметры (${typeof schema}) не соответствуют сигнатуре метода ${this.neme}.addToSchema`);
+      throw new TypeError(`Недопустимое значение аргумента "schema".`);
     }
 
-    if (typeof columnPosition !== 'number') {
-      throw new TypeError(`Параметры (${typeof schema}, ${typeof columnPosition}) не соответствуют сигнатуре метода ${this.neme}.addToSchema`);
+    if (typeof col !== 'number') {
+      throw new TypeError(`Недопустимое значение аргумента "col".`);
     }
 
-    if (!(Number.isInteger(columnPosition) && columnPosition > 0)) {
-      throw new Error(`Недопустимый аргумент columnPosition метода ${this.neme}addToSchema.`);
+    if (!(Number.isInteger(col) && col > 0)) {
+      throw new TypeError(`Недопустимое значение аргумента "col".`);
     }
 
     this._schema = schema;
 
-    const columnIndex = columnPosition - 1;
+    const colIndex = col - 1;
 
-    if (this._schema.fields.find((item, i) => item?._values?.name === this?._values?.name && columnIndex !== i)) {
-      throw new Error(`Поле с именем "${(this?._values?.name ?? null)}" уже существует!`);
+    if (this._schema.fields.find((item, i) => item?._values?.name === this?._values?.name && colIndex !== i)) {
+      throw new Error(`Поле с именем "${this?._values?.name ?? null}" уже существует!`);
     }
 
-    this._schema.fields[columnIndex] = this._proxy;
+    this._schema.fields[colIndex] = this._proxy;
 
     return this._proxy;
   }
@@ -931,7 +1057,7 @@ SheetSchema.Field = class Field {
     const range = this.getRange();
 
     if (!range) {
-      throw new Error(`Недопустимое значение range.`);
+      throw new TypeError(`Недопустимое значение "range".`);
     }
 
     const listMetadata = range
@@ -967,7 +1093,7 @@ SheetSchema.Field = class Field {
     const range = this.getRange();
 
     if (!range) {
-      throw new Error(`Недопустимое значение range.`);
+      throw new TypeError(`Недопустимое значение "range".`);
     }
 
     this.remove();
@@ -994,11 +1120,46 @@ SheetSchema.Field = class Field {
 
 
   /**
+   * Вызывается при преобразовании объекта в соответствующее примитивное значение.
+   * @param {string} hint Строковый аргумент, который передаёт желаемый тип примитива: `string`, `number` или `default`.
+   * @return {string}
+   */
+  [Symbol.toPrimitive](hint) {
+    if (hint !== 'string') {
+      return null;
+    }
+
+    return this.constructor.name;
+  }
+
+
+
+  /**
+   * Возвращает значение текущего объекта.
+   * @return {string}
+   */
+  valueOf() {
+    return (this[Symbol.toPrimitive] ? this[Symbol.toPrimitive]() : this.constructor.name);
+  }
+
+
+
+  /**
+   * Геттер для получения строки, представляющей тег объекта.
+   * @return {string} Имя класса текущего объекта, используемое в `Object.prototype.toString`.
+   */
+  get [Symbol.toStringTag]() {
+    return this.constructor.name;
+  }
+
+
+
+  /**
    * Возвращает строку, представляющую объект.
    * @return {string}
    */
   toString() {
-    return this.constructor.name;
+    return (this[Symbol.toPrimitive] ? this[Symbol.toPrimitive]('string') : this.constructor.name);
   }
 
 };
@@ -1139,7 +1300,7 @@ SheetSchema.Field.Type.DATE = 'DATE';
 SheetSchema.Field.Type.TIME = 'TIME';
 
 /**
- * Дата/время - Год, месяц, день, час, минута, секунда и субсекунда.
+ * Дата/время - Год, месяц, день, час, минута, секунда и доля секунды.
  * @type {string}
  * @readonly
  */
@@ -1177,27 +1338,6 @@ if (typeof Object.isObject !== 'function') {
       input !== null &&
       typeof input === 'object' &&
       input.constructor === Object
-    );
-  };
-}
-
-
-
-
-
-if (typeof isSheet !== 'function') {
-  /**
-   * Возвращает `true`, если объект является [`Sheet`](https://developers.google.com/apps-script/reference/spreadsheet/sheet); иначе, `false`.
-   * @param {*} input Объект для проверки.
-   * @return {boolean}
-   */
-  isSheet = input => {
-    if (!arguments.length)
-      return false;
-
-    return (
-      input === Object(input) &&
-      input?.toString() === 'Sheet'
     );
   };
 }
